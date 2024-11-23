@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نوران</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="robot-profile">
+            <h2>نوران</h2>
+            <img src="{{ url_for('static', filename='1.png') }}" alt="Robot Profile" class="robot-icon"> <!-- Replace with your robot icon image -->
+        </div>
+        
+    </div>
+    <div class="chat-box" id="chat-box">
+        <!-- Messages will appear here -->
+    </div>
+    <div class="chat-input-container">
+        <input type="text" id="message-input" placeholder="پیام خود را بنویسید..." autocomplete="off" dir="rtl">
+        <button id="send-btn">ارسال</button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

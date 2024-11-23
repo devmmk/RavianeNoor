@@ -1,0 +1,5 @@
+pyttsx3
+pytesseract
+requests
+flask
+speechrecognition
