@@ -128,14 +128,14 @@ class WikiShahid:
             text_content = []
             current = hr_tag.next_sibling
             
-            while current and not isinstance(current, type(soup.find('div'))):
+            while current and current.tag != 'div':
                 if hasattr(current, 'text'):
                     text = current.text.strip()
                     if text:
                         text_content.append(text)
                 current = current.next_sibling
             
-            return ' '.join(text_content).replace('ذخیره مقاله با فرمت پی دی اف', '').strip()
+            return ' '.join(text_content).replace('ذخیره مقاله با فرمت پی دی اف', '').replace('[ ویرایش ]')
             
         except BaseException as e:
             print(f"Error: {e}")
