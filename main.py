@@ -115,31 +115,22 @@ class WikiShahid:
     
     def get_details(self, name):
         url = f"https://wikishahid.com/{name}"
+        print(name)
         try:
             response = requests.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # Find the hr tag
-            hr_tag = soup.find('hr')
-            if not hr_tag:
-                return "HR tag not found"
-            
-            # Get all text content between hr and the next div
-            text_content = []
-            current = hr_tag.next_sibling
-            
-            while current and  not isinstance(current, type(soup.find('div'))):
-                if hasattr(current, 'text'):
-                    text = current.text.strip()
-                    if text:
-                        text_content.append(text)
-                current = current.next_sibling
-            
-            return ' '.join(text_content).replace('ذخیره مقاله با فرمت پی دی اف', '').replace('[ ویرایش ]', '\n\n')
-            
+            print(response.text)
         except BaseException as e:
-            print(f"Error: {e}")
-            return None        
+            print(e)
+        else:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            table = soup.find('tbody')
+            text = table.get_text(separator=' ', strip=True).replace('ذخیره مقاله با فرمت پی دی اف', '').replace('[ ویرایش ]', '\n\n').replace('. ', '.\n').replace(name + ' ' + name, name)
+            splited = text.splitlines()
+            for line in splited:
+                if 'فهرست مندرجات' in line:
+                    splited.remove(line)
+            return '\n'.join(splited)
+            
 
             
 """
@@ -256,4 +247,4 @@ def wiki_details():
     return wiki.get_details(data)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(debug=True)
