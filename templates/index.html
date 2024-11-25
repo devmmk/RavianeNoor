@@ -16,8 +16,10 @@
         </div>
         
     </div>
-    <div class="chat-box" id="chat-box">
+    <div class="chat-box" id="chat-box" dir="rtl">
         <!-- Messages will appear here -->
+         <div class="message bot">سلام، من نوران هستم<br/>
+            من یک هوش مصنوعی مبتنی بر متن هستم و میتونم درباره موضوعات مختلف با شما صحبت کنم        </div>
     </div>
     <div class="chat-input-container">
         <input type="text" id="message-input" placeholder="پیام خود را بنویسید..." autocomplete="off" dir="rtl">
@@ -26,5 +28,6 @@
 </div>
 
 <script src="{{ url_for('static', filename='main.js') }}"></script>
+
 </body>
 </html>

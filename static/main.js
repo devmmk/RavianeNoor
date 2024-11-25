@@ -42,18 +42,6 @@ async function sendMessage() {
 }
 
 
-async function firstMessage() {
-
-    // Get bot response
-    const botMessageElement = document.createElement('div');
-    botMessageElement.classList.add('message', 'bot');
-    
-    botMessageElement.textContent = "سلام، من نوران هستم\nمن یک هوش مصنوعی مبتنی بر متن هستم و میتونم درباره موضوعات مختلف با شما صحبت کنم";
-
-    chatBox.appendChild(botMessageElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
 
 async function getBotResponse(userMessage) {
     if (!userMessage) return "لطفا پیام خود را بنویسید";
