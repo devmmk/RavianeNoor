@@ -32,17 +32,31 @@ async function sendMessage() {
     
     try {
         const response = await getBotResponse(messageText);
-        botMessageElement.textContent = "Bot: " + response;
+        botMessageElement.textContent = response;
     } catch (error) {
-        botMessageElement.textContent = "Bot: Sorry, I encountered an error processing your request.";
+        botMessageElement.textContent = "متاسفم، سقف استفاده روزانه شما پر شده است.";
     }
 
     chatBox.appendChild(botMessageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+
+async function firstMessage() {
+
+    // Get bot response
+    const botMessageElement = document.createElement('div');
+    botMessageElement.classList.add('message', 'bot');
+    
+    botMessageElement.textContent = "سلام، من نوران هستم\nمن یک هوش مصنوعی مبتنی بر متن هستم و میتونم درباره موضوعات مختلف با شما صحبت کنم";
+
+    chatBox.appendChild(botMessageElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+
 async function getBotResponse(userMessage) {
-    if (!userMessage) return "Please provide a message";
+    if (!userMessage) return "لطفا پیام خود را بنویسید";
     
     const formData = new FormData();
     formData.append('message', userMessage);
@@ -53,7 +67,7 @@ async function getBotResponse(userMessage) {
     });
     
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error('خطا در دریافت پاسخ از سمت سرور');
     }
     
     return await response.text();

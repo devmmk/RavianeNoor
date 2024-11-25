@@ -110,23 +110,36 @@ class WikiShahid:
             result = {}
             soup = BeautifulSoup(response.text)
             for i in soup.find_all('div'):
-                result.update({i.text: ""})
-        
-        return result
+                result.update({i.text: ""})        
+            return result
     
     def get_details(self, name):
         url = f"https://wikishahid.com/{name}"
         try:
             response = requests.get(url)
-            print(response.text)
-        except BaseException as e:
-            print(e)
-        else:
             soup = BeautifulSoup(response.text, 'html.parser')
-            table = soup.find('tbody')
-            text = table.get_text(separator=' ', strip=True)
-            return text.replace('ذخیره مقاله با فرمت پی دی اف', '')
             
+            # Find the hr tag
+            hr_tag = soup.find('hr')
+            if not hr_tag:
+                return "HR tag not found"
+            
+            # Get all text content between hr and the next div
+            text_content = []
+            current = hr_tag.next_sibling
+            
+            while current and not isinstance(current, type(soup.find('div'))):
+                if hasattr(current, 'text'):
+                    text = current.text.strip()
+                    if text:
+                        text_content.append(text)
+                current = current.next_sibling
+            
+            return ' '.join(text_content).replace('ذخیره مقاله با فرمت پی دی اف', '').strip()
+            
+        except BaseException as e:
+            print(f"Error: {e}")
+            return None        
 
             
 """
