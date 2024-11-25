@@ -135,7 +135,7 @@ class WikiShahid:
                         text_content.append(text)
                 current = current.next_sibling
             
-            return ' '.join(text_content).replace('ذخیره مقاله با فرمت پی دی اف', '').replace('[ ویرایش ]')
+            return ' '.join(text_content).replace('ذخیره مقاله با فرمت پی دی اف', '').replace('[ ویرایش ]', '\n\n')
             
         except BaseException as e:
             print(f"Error: {e}")
