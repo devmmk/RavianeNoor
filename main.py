@@ -128,7 +128,7 @@ class WikiShahid:
             text_content = []
             current = hr_tag.next_sibling
             
-            while current and current.tag != 'div':
+            while current and  not isinstance(current, type(soup.find('div'))):
                 if hasattr(current, 'text'):
                     text = current.text.strip()
                     if text:
