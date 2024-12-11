@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, send_file, render_template
-import io, json, os, time, requests
+import io, json, os, time, requests, re
 import pytesseract
 from PIL import Image, ImageEnhance, ImageFilter
 from bs4 import BeautifulSoup
@@ -128,6 +128,45 @@ class WikiShahid:
                 if 'فهرست مندرجات' in line:
                     splited.remove(line)
             return '\n'.join(splited)
+    
+    def search_grave(self, name):
+        url = "https://www.golzar.info/?s=" + name
+        req = get(url)
+        text = req.text
+        soup = BeautifulSoup(text, 'html.parser')
+        divs_with_mart_sec = soup.find_all('div', class_='clomun-mart pad-10 pull-right')
+        result = []
+        for div in divs_with_mart_sec:
+            for link in div.find_all('a'):
+                if 'category' in link['href']:
+                    continue
+                else:
+                    link = link['href']
+                    break
+
+            img = div.find('img')['src']
+            result.append({'link': link, 'img': img, 'name': div.text})
+        return result
+    
+    def get_grave(self, url):
+        req = get(url)
+        text = req.text
+        soup = BeautifulSoup(text, 'html.parser')
+        imgs = soup.find_all('img')
+        wp_images = []
+        for img in imgs:
+            if 'wp-content/uploads' in img['src']:
+                wp_images.append(img['src'])
+        return wp_images[-1]
+    
+    def get_gps(self, url):
+        req = get(url)
+        text = req.text
+        soup = BeautifulSoup(text, 'html.parser')
+        lat_match = re.search(r'lat:\s*([-\d.]+)', text).group(0).replace('lat: ', '')
+        lng_match = re.search(r'lng:\s*([-\d.]+)', text).group(0).replace('lng: ', '')
+        return (lat_match, lng_match)
+
             
 
             
@@ -160,21 +199,24 @@ class AIChatBot:
     def __init__(self):
         self.url = "https://api3.haji-api.ir/majid/gpt/4?q={}&license=HPegOmZxczNMUNLG38IZWSH4WHFuaWCBVYdt8Iu1AfIGjBVMo71fZA0idUd"
         self.role = """تو باید در نقش شهید حسین قجه ای به کاربر پاسخ بدی. متن زیر زندگینامه حسین قجه است:\n\n
-    حسین قجه‌ای  حسین علی قجه‌ای در ۱۴ شهریور ۱۳۳۷ در زرین شهر از شهرهای استان اصفهان به دنیا آمد.
+    حسین علی قجه‌ای در ۱۴ شهریور ۱۳۳۷ در زرین شهر از شهرهای استان اصفهان به دنیا آمد.
 عضو رسمی سپاه پاسداران انقلاب اسلامی بود و از فرماندهان لشکر ۲۷ محمد رسول‌الله محسوب می‌شد.
 در جریان عملیات آزادسازی خرمشهر ، گردان سلمان فارسی به فرماندهی حسین قجه‌ای موفق به دفع سومین پاتک سنگین دو تیپ زرهی و مکانیزه سپاه سوم نیروی زمینی عراق در جاده اهواز / خرمشهر شد.
 در جریان این مقاومت شش روزه، بیشتر نیروهای گردان و همچنین حسین قجه‌ای به شهادت رسیدند.
 این واقعه در ۱۵ اردیبهشت ۱۳۶۱ رخ داد.
 پیکر وی در گلستان شهدای زرین شهر به خاک سپرده شد.
 
-به سوال هایی که خارج از این اطلاعات هستند و نمیدانی هم پاسخ نده. متن کاربر:    
-    """
+به سوال هایی که خارج از این اطلاعات هستند و نمیدانی هم پاسخ نده. متن کاربر:\n\n
+"""
     
     def talk_to_ai(self, text):
         response = get(self.url.format(self.role + text))
         print(response.text)
         return response.json()['result']
-        
+
+
+w = WikiShahid()
+print(w.get_gps(w.search_grave('حسین')[0]['link']))
 
 app = Flask(__name__)
 translate = Translate()
@@ -252,6 +294,18 @@ def wiki_details():
     data = request.form.get('name')
     wiki = WikiShahid()
     return wiki.get_details(data)
+
+@app.route("/search-grave")
+def grave_search():
+    data = request.form.get('name')
+    wiki = WikiShahid()
+    return wiki.grave_search(data)
+
+@app.route("/grave")
+def grave_search():
+    data = request.form.get('url')
+    wiki = WikiShahid()
+    return (wiki.get_grave(data), wiki.get_gps(data))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
