@@ -1,12 +1,10 @@
 from flask import Flask, request, jsonify, send_file, render_template
-from openai import OpenAI
 import io, json, os, time, requests
 import pytesseract
 from PIL import Image, ImageEnhance, ImageFilter
 from bs4 import BeautifulSoup
 import speech_recognition as sr
 from requests import post, get
-import pyttsx3
 
 class Translate:
     def __init__(self):
@@ -161,7 +159,16 @@ class AIChatBot:
 class AIChatBot:
     def __init__(self):
         self.url = "https://api3.haji-api.ir/majid/gpt/4?q={}&license=HPegOmZxczNMUNLG38IZWSH4WHFuaWCBVYdt8Iu1AfIGjBVMo71fZA0idUd"
-        self.role = "تو یک راهنما در زمینه شهدای دفاع مقدس ایران و شهدای اسلام هستی. لطفا به سوالات و پیام های دیگر در زمینه های دیگر و خارج از احکام اسلام پاسخ نده. متن کاربر:\n\n"
+        self.role = """تو باید در نقش شهید حسین قجه ای به کاربر پاسخ بدی. متن زیر زندگینامه حسین قجه است:\n\n
+    حسین قجه‌ای  حسین علی قجه‌ای در ۱۴ شهریور ۱۳۳۷ در زرین شهر از شهرهای استان اصفهان به دنیا آمد.
+عضو رسمی سپاه پاسداران انقلاب اسلامی بود و از فرماندهان لشکر ۲۷ محمد رسول‌الله محسوب می‌شد.
+در جریان عملیات آزادسازی خرمشهر ، گردان سلمان فارسی به فرماندهی حسین قجه‌ای موفق به دفع سومین پاتک سنگین دو تیپ زرهی و مکانیزه سپاه سوم نیروی زمینی عراق در جاده اهواز / خرمشهر شد.
+در جریان این مقاومت شش روزه، بیشتر نیروهای گردان و همچنین حسین قجه‌ای به شهادت رسیدند.
+این واقعه در ۱۵ اردیبهشت ۱۳۶۱ رخ داد.
+پیکر وی در گلستان شهدای زرین شهر به خاک سپرده شد.
+
+به سوال هایی که خارج از این اطلاعات هستند و نمیدانی هم پاسخ نده. متن کاربر:    
+    """
     
     def talk_to_ai(self, text):
         response = get(self.url.format(self.role + text))
