@@ -299,7 +299,7 @@ def wiki_details():
 def grave_search():
     data = request.form.get('name')
     wiki = WikiShahid()
-    return wiki.grave_search(data)
+    return wiki.search_grave(data)
 
 @app.route("/grave")
 def grave():
