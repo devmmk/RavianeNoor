@@ -302,7 +302,7 @@ def grave_search():
     return wiki.grave_search(data)
 
 @app.route("/grave")
-def grave_search():
+def grave():
     data = request.form.get('url')
     wiki = WikiShahid()
     return (wiki.get_grave(data), wiki.get_gps(data))
