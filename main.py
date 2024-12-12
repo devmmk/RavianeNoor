@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify, send_file, render_template
 import io, json, os, time, requests, re
 import pytesseract
+from base64 import b64encode, b64decode
 from PIL import Image, ImageEnhance, ImageFilter
 from bs4 import BeautifulSoup
 import speech_recognition as sr
 from requests import post, get
+import time
 
 class Translate:
     def __init__(self):
@@ -82,6 +84,7 @@ class WikiShahid:
     def search(self, query):
 
         url = 'https://wikishahid.com/ajax/search/1732253172372'
+        print(url)
         headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:131.0) Gecko/20100101 Firefox/131.0',
             'Accept': '*/*',
@@ -91,7 +94,7 @@ class WikiShahid:
             'Origin': 'https://wikishahid.com',
             'Connection': 'keep-alive',
             'Referer': 'https://wikishahid.com/',
-            'Cookie': 'ci_session=Uk9sA83V6cR73DVoM92Mr85hgwR7n1QyOWY%2BaFqzDiODSZSYV%2BCOb04T9bu8ZkyQkMZKqogQg6%2Be5UE%2FUp45FFtuxWW7E15O%2BKSY6BCIb9NPBE4UveHvHXyi7vO9yG7OeR5PdSizc7nquLbTRCCSvCLJX%2F2e7WbMtJ7HTrtAFC%2BNYPjx6q4s7n%2FcSRBRlzax9ekMJM3phIgGYdzytFriozVkBUQXgfIj82S5Kssz81vAOy0TeT4dQCMsKODu%2FQEX618064VzsHqLIV0RwjrG4KIUoWVTSX1RKWhmqvXHO5aoSdLWjYYPKYZB1uJ2OurCGJp0sNtSYgAnOs0HQP3sMQj47jX3ftmbfYzGHOw%2F9qoWF5jdBC762DiwkQa1W4IA',
+            'Cookie': 'ci_session=lMANhdjb99Bg1gqLfd4aVX3Bg0XOlm%2F7ACK9HRzeDXj6sX0NtIyPQAwimIpGm1DkYbjUptR6No8zZRcW2F0stNSJ99BMgzElXjZeRlqgzegTsX5URPTYivHan4cne9t6iHEcD70GdjWmOXtOylzrKf6rvVfTGqsGsdUlgXPdSWgEjuzzyO4zt%2Fmmj7Xa075Z5AAhfo51ZIKEnxl7TLf31jwscbYkukqMm%2Bf2sZzOJxxznABC8kC8asR%2B2DI23%2BztbR9eSdFR9uJjnmNJiBw9NL%2F%2B%2FCWcbkhHEDE%2F4Ly7kpSVktHHyXk2guSrv1zFyweuBpHqKBYL7YGfhqjPvM9gCh7ILAYRXdGiE5qRTs1DVeDM58zuOImrfXy8mxUk5wFn',
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'same-origin',
@@ -105,10 +108,10 @@ class WikiShahid:
         except BaseException as e:
             print(e)
         else:
-            result = {}
+            result = []
             soup = BeautifulSoup(response.text)
             for i in soup.find_all('div'):
-                result.update({i.text: ""})        
+                result.append(i.text)        
             return result
     
     def get_details(self, name):
@@ -214,10 +217,6 @@ class AIChatBot:
         print(response.text)
         return response.json()['result']
 
-
-w = WikiShahid()
-print(w.get_gps(w.search_grave('حسین')[0]['link']))
-
 app = Flask(__name__)
 translate = Translate()
 ai = AIChatBot()
@@ -305,7 +304,9 @@ def grave_search():
 def grave():
     data = request.form.get('url')
     wiki = WikiShahid()
-    return (wiki.get_grave(data), wiki.get_gps(data))
+    res = [wiki.get_grave(data), list(wiki.get_gps(data))]
+    print(res)
+    return res
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
