@@ -304,7 +304,7 @@ def grave_search():
 def grave():
     data = request.form.get('url')
     wiki = WikiShahid()
-    res = [wiki.get_grave(data), list(wiki.get_gps(data))]
+    res = list(wiki.get_gps(data))
     print(res)
     return res
 
