@@ -295,13 +295,13 @@ def wiki_details():
     wiki = WikiShahid()
     return wiki.get_details(data)
 
-@app.route("/search-grave")
+@app.route("/search-grave", methods=['POST'])
 def grave_search():
     data = request.form.get('name')
     wiki = WikiShahid()
     return wiki.search_grave(data)
 
-@app.route("/grave")
+@app.route("/grave", methods=['POST'])
 def grave():
     data = request.form.get('url')
     wiki = WikiShahid()
