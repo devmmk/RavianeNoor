@@ -168,7 +168,7 @@ class WikiShahid:
         soup = BeautifulSoup(text, 'html.parser')
         lat_match = re.search(r'lat:\s*([-\d.]+)', text).group(0).replace('lat: ', '')
         lng_match = re.search(r'lng:\s*([-\d.]+)', text).group(0).replace('lng: ', '')
-        return (lat_match, lng_match)
+        return lat_match + '-' + lng_match
 
             
 
