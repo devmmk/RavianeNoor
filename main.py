@@ -304,9 +304,7 @@ def grave_search():
 def grave():
     data = request.form.get('url')
     wiki = WikiShahid()
-    res = list(wiki.get_gps(data))
-    print(res)
-    return res
+    return wiki.get_gps(data)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
