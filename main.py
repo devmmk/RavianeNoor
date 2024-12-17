@@ -6,6 +6,7 @@ from PIL import Image, ImageEnhance, ImageFilter
 from bs4 import BeautifulSoup
 import speech_recognition as sr
 from requests import post, get
+from openai import OpenAI
 import time
 
 class Translate:
@@ -170,10 +171,6 @@ class WikiShahid:
         lng_match = re.search(r'lng:\s*([-\d.]+)', text).group(0).replace('lng: ', '')
         return lat_match + '-' + lng_match
 
-            
-
-            
-"""
 class AIChatBot:
     def __init__(self):         
         self.base_url = "https://api.aimlapi.com/v1"
@@ -183,39 +180,23 @@ class AIChatBot:
 
     def talk_to_ai(self, text):
         messages=[
-                {"role": "system", "content": "You are a language learning assistant and partner to improving language skills."},
+                {"role": "system", "content": "تو حسین قجه ای شهید دفاع مقدس هستی"},
                 {"role": "user", "content": text},
         ]
 
-        completion = self.api.chat.completions.create(
-            model="gpt-4o",
-            messages=messages,
-            temperature=0.7,
-            max_tokens=256,
-        )
+        try:
+            completion = self.api.chat.completions.create(
+                model="gpt-4o",
+                messages=messages,
+                temperature=0.7,
+                max_tokens=256,
+            )
 
-        response = completion.choices[0].message.content
-        return response
-"""
+            response = completion.choices[0].message.content
+            return response
+        except:
+            return "سقف استفاده روزانه شما از برنامه پر شده است. برای ارسال پیام های بیشتر اشتراک ویژه را خریداری کنید."
 
-class AIChatBot:
-    def __init__(self):
-        self.url = "https://api3.haji-api.ir/majid/gpt/4?q={}&license=HPegOmZxczNMUNLG38IZWSH4WHFuaWCBVYdt8Iu1AfIGjBVMo71fZA0idUd"
-        self.role = """تو باید در نقش شهید حسین قجه ای به کاربر پاسخ بدی. متن زیر زندگینامه حسین قجه است:\n\n
-    حسین علی قجه‌ای در ۱۴ شهریور ۱۳۳۷ در زرین شهر از شهرهای استان اصفهان به دنیا آمد.
-عضو رسمی سپاه پاسداران انقلاب اسلامی بود و از فرماندهان لشکر ۲۷ محمد رسول‌الله محسوب می‌شد.
-در جریان عملیات آزادسازی خرمشهر ، گردان سلمان فارسی به فرماندهی حسین قجه‌ای موفق به دفع سومین پاتک سنگین دو تیپ زرهی و مکانیزه سپاه سوم نیروی زمینی عراق در جاده اهواز / خرمشهر شد.
-در جریان این مقاومت شش روزه، بیشتر نیروهای گردان و همچنین حسین قجه‌ای به شهادت رسیدند.
-این واقعه در ۱۵ اردیبهشت ۱۳۶۱ رخ داد.
-پیکر وی در گلستان شهدای زرین شهر به خاک سپرده شد.
-
-به سوال هایی که خارج از این اطلاعات هستند و نمیدانی هم پاسخ نده. متن کاربر:\n\n
-"""
-    
-    def talk_to_ai(self, text):
-        response = get(self.url.format(self.role + text))
-        print(response.text)
-        return response.json()['result']
 
 app = Flask(__name__)
 translate = Translate()
